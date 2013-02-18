@@ -26,6 +26,76 @@ header("Location: ".$_SERVER['PHP_SELF']);
 header("Location: banned.php");
 }
 }
+//Debug Units
+  function debugUnits() {
+  $debug_startwert = 4000000;
+  //debug truppen in kaserne/stall/werkstatt
+  $sql = "SELECT * FROM ".TB_PREFIX."training";
+  $result = mysql_query($sql)or die(mysql_error());
+  while ($row = mysql_fetch_assoc($result)) {
+  $training_units_id[] = $row['id'];
+  $training_units_check[] = $row['amt'];
+  }
+  $count_train_units = count($training_units_id);
+  $i = 0;
+  while ($i < $count_train_units) {
+  if ($training_units_check[$i] > $debug_startwert) {
+  mysql_query("DELETE FROM ".TB_PREFIX."training WHERE id = ".$training_units_id[$i]);
+  }
+  $i++;
+  }
+  //debug truppen unterstuetzungen
+  $i = 1;
+  $sql_erw = "";
+  while ($i <= 50) {
+  if ($i != 50) {
+  $sql_erw += "u".$i." > ".$debug_startwert." OR ";
+  }
+  else {
+  $sql_erw += "u".$i." > ".$debug_startwert."";
+  }
+  $i++;
+  }
+  $sql = "SELECT * FROM ".TB_PREFIX."enforcement WHERE ".$sql_erw."";
+  $result = mysql_query($sql)or die(mysql_error());
+  while ($row = mysql_fetch_assoc($result)) {
+  $enforcement_units_check[] = $row['id'];
+  }
+  $count_enforcement_units = count($enforcement_units_check);
+  $i = 0;
+  while ($i < $count_enforcement_units) {
+  if ($enforcement_units_check[$i] > $debug_startwert) {
+  mysql_query("DELETE FROM ".TB_PREFIX."enforcement WHERE id = ".$enforcement_units_check[$i]);
+  }
+  $i++;
+  }
+  //debug truppen im dorf
+  $i = 1;
+  $sql_erw = "";
+  while ($i <= 50) {
+  if ($i != 50) {
+  $sql_erw += "u".$i." > ".$debug_startwert." OR ";
+  }
+  else {
+  $sql_erw += "u".$i." > ".$debug_startwert."";
+  }
+  $i++;
+  }
+  $sql = "SELECT * FROM ".TB_PREFIX."units WHERE ".$sql_erw."";
+  $result = mysql_query($sql)or die(mysql_error());
+  while ($row = mysql_fetch_assoc($result)) {
+  $units_check[] = $row['id'];
+  }
+  $count_units = count($units_check);
+  $i = 0;
+  while ($i < $count_units) {
+  if ($units_check[$i] > $debug_startwert) {
+  mysql_query("DELETE FROM ".TB_PREFIX."units WHERE id = ".$units_check[$i]);
+  }
+  $i++;
+  }
+ }
+ debugUnits();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
